@@ -14,16 +14,17 @@ def create_requests(polygon):
     scale = 2
     maptype = "satellite"
     coords = build_path(polygon.get("vertices"))
+    coords_simple = simplify_coords(coords, max_coords=120)
     key = "AIzaSyCbSK4DpQMnjtBcite62RK80LsPOnRELVg"
 
     path_color = "0xff8800ff"
     path_weight = 1
     path_fillcolor = "0xff8800ff"
 
-    request = "{api}?zoom={zoom}&size={size}x{size}&scale={scale}&maptype={maptype}&visible={visible}".format(api=api,zoom=zoom,size=size,scale=scale,maptype=maptype,visible=coords)
+    request = "{api}?zoom={zoom}&size={size}x{size}&scale={scale}&maptype={maptype}&visible={visible}".format(api=api,zoom=zoom,size=size,scale=scale,maptype=maptype,visible=coords_simple)
 
     image_request = request + "&key={key}".format(key=key)
-    mask_request = request + "&path=color:{color}|weight:{weight}|fillcolor:{fillcolor}|{path}&key={key}".format(color=path_color,weight=path_weight,fillcolor=path_fillcolor,path=coords,key=key)
+    mask_request = request + "&path=color:{color}|weight:{weight}|fillcolor:{fillcolor}|{path}&key={key}".format(color=path_color,weight=path_weight,fillcolor=path_fillcolor,path=coords_simple,key=key)
 
     return image_request, mask_request
 
@@ -33,9 +34,17 @@ def build_path(vertices):
         ret += str(vertex[1]) + ',' + str(vertex[0]) + '|'
     return ret[:-1]
 
+def simplify_coords(coordinates, max_coords):
+    '''Remove half of the coordinates, until there are less then max_coords '''
+    coordinates = coordinates.split('|')
+    while(len(coordinates) > max_coords):
+        coordinates = [c for (i, c) in enumerate(coordinates) if i % 2 == 0]
+
+    return '|'.join(coordinates)
+
 def main():
     data = read(filename)
-    request = create_requests(data[2])
+    request = create_requests(data[0])
     print(request)
 
 if __name__ == '__main__':

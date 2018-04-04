@@ -50,6 +50,8 @@ def process_polygon(polygon, force):
             with open(RAW + polygon.get("id") + "_mask" + EXT, 'wb') as file:
                 mask = mask_response.content
                 file.write(mask)
+        else:
+            print("Error with request on mask: code {}".format(mask_response.status_code))
 
     return image, mask
 
@@ -70,5 +72,5 @@ if __name__ == '__main__':
         args.filename += JSON
     json_files = [os.path.basename(f) for f in glob.glob(PROCESSED + "*" + JSON)]
     if not args.filename in json_files:
-        raise Exception("this json file doesn't exists")
+        raise Exception("this json file doesn't exists: {}".format(args.filename))
     main(args)
