@@ -1,7 +1,6 @@
 import json
 import bisect
 
-filename = "test_football.json"
 
 zoom_ratios = [1128.49722, 2256.99444, 4513.98888, 9027.977761, 18055.95552, 36111.91104, 72223.82209, 144447.6442, 288895.2884, 577790.5767, 1155581.153, 2311162.307, 4622324.614, 9244649.227, 18489298.45, 36978596.91, 73957193.82, 147914387.6, 295828775.3, 591657550.5]
 zoom_levels = list(range(20, 0, -1))
@@ -11,6 +10,7 @@ def read(filename):
     with open(filename) as file:
         data = json.load(file)
         return data
+
 
 def create_requests(polygon):
     api = "https://maps.googleapis.com/maps/api/staticmap"
@@ -71,6 +71,7 @@ def main():
     data = read(filename)
     request = create_requests(data[0])
     print(request)
+
 
 if __name__ == '__main__':
     main()
